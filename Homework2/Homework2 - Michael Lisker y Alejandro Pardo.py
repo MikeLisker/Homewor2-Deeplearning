@@ -1,5 +1,4 @@
 #Realizado por: Michael Lisker y Alejandro Pardo
-
 import os
 import pandas as pd
 import numpy as np
@@ -13,25 +12,25 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 logging.getLogger('tensorflow').setLevel(logging.ERROR)
 
 # Cargar el dataset
-dataset_path = 'C:/Users/mclis/Downloads/Homework2/Diagnostico(Datos).csv'
-df = pd.read_csv(dataset_path, sep=';', on_bad_lines='skip')
+dataset_path = '/content/Diagnostico.csv'
+db = pd.read_csv(dataset_path, sep=';', on_bad_lines='skip')
 
 # Eliminar valores nulos
-df = df.dropna()
+db = db.dropna()
 
 # Convertir texto a números usando LabelEncoder
 label_encoder = LabelEncoder()
-for col in df.select_dtypes(include=['object']).columns:
-    if df[col].nunique() <= 10:
-        df[col] = label_encoder.fit_transform(df[col])
+for col in db.select_dtypes(include=['object']).columns:
+    if db[col].nunique() <= 10:
+        db[col] = label_encoder.fit_transform(db[col])
 
 # Convertir cadenas a números donde sea posible
-df = df.applymap(lambda x: float(str(x).replace(',', '.')) if isinstance(x, str) else x)
+db = db.applymap(lambda x: float(str(x).replace(',', '.')) if isinstance(x, str) else x)
 
 # Dividir en 80% entrenamiento y 20% validación
-train_size = int(len(df) * 0.8)
-train_data = df.iloc[:train_size]
-val_data = df.iloc[train_size:]
+train_size = int(len(db) * 0.8)
+train_data = db.iloc[:train_size]
+val_data = db.iloc[train_size:]
 
 # Seleccionar características y variable objetivo
 X_train = train_data.drop(columns=['EVOLUCION'])
@@ -102,3 +101,4 @@ plt.ylabel("Predicciones (y_pred)")
 plt.title("Gráfico de Regresión: Predicciones vs. Valores Reales")
 plt.plot([min(y_val.numpy()), max(y_val.numpy())], [min(y_val.numpy()), max(y_val.numpy())], color='red', linestyle='dashed')  # Línea ideal
 plt.show()
+
